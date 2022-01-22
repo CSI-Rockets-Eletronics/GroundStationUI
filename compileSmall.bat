@@ -1,0 +1,1 @@
+g++ -std=c++17 -O3 main.cpp RelayStatuses.cpp Sensors.cpp FileReader.cpp DataParser.cpp -ISDL2\include -LSDL2\lib -Wall -lmingw32 -lSDL2_ttf -lSDL2main -lSDL2  -o main

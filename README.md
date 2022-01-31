@@ -27,13 +27,10 @@
   <p align="center">
     A simple, lightweight user interface to monitor the launch operations of our rocket.
     <br />
-    <a href="https://github.com/CSI-Rockets-Eletronics/GroundStationUI"><strong>Explore the docs »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/CSI-Rockets-Eletronics/GroundStationUI">View Demo</a>
-    ·
     <a href="https://github.com/CSI-Rockets-Eletronics/GroundStationUI/issues">Report Bug</a>
-    ·
+      | 
     <a href="https://github.com/CSI-Rockets-Eletronics/GroundStationUI/issues">Request Feature</a>
   </p>
 </div>
@@ -71,16 +68,17 @@
 <div align="center">
 <figure>
     <img src="https://i.imgur.com/wNu3vcQ.png" alt="Current Stage Screenshot" width="600">
+    <p>
     <figcaption>Screenshot of the current state</figcaption>
 </figure>
 <figure>
     <img src="https://i.imgur.com/luzaoYA.png" alt="Design Mockup" width="600">
+    <p>
     <figcaption>Mockup of the desired final state</figcaption>
 </figure>
-
 </div>
 
-This is an user interface for monitoring the launch of our Rocket. The design philosophy is to be simple, lightweight, platform agnostic, efficient, and expandable.
+This is an user interface for monitoring the launch of our Rocket. The design philosophy is to be simple, lightweight, platform agnostic, efficient, and expandable. Currently it operates with a mouse and keyboard but we have plans to move it to full on touch controls.
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -107,8 +105,14 @@ Contact Victor at vcb2115@columbia.edu on how to do this and to get pre-made pro
 
 This is an example of how to list things you need to use the software and how to install them.
 
-- gcc
+- gcc -
   https://gcc.gnu.org/install/
+- SDL2 -
+  https://wiki.libsdl.org/Installation
+- SDL True Type Font -
+  https://github.com/libsdl-org/SDL_ttf
+- Optional but recommended: CLion IDE (Free for students) and CMake to make this run as a CLion project. Requires some aditional files. Contact Victor at vcb2115@columbia.edu. -
+  https://www.jetbrains.com/clion/
 
 ### Installation
 
@@ -130,7 +134,7 @@ git clone git@github.com:CSI-Rockets-Eletronics/GroundStationUI.git
    ```sh
    .\compile.bat
    ```
-2. On Unix"
+2. On Unix
    ```sh
    ./compile.sh
    ```
@@ -141,9 +145,12 @@ git clone git@github.com:CSI-Rockets-Eletronics/GroundStationUI.git
 
 ## Usage
 
-Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
+1. Connect the ground station to the computer's USB and initiate the driver, which will spill the data into a file in the disk.
+2. Use the command:
+   ```sh
+   ./main path/to/GroundStationOutputDataFile.txt
+   ```
+3. Profit
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -164,17 +171,15 @@ See the [open issues](https://github.com/CSI-Rockets-Eletronics/GroundStationUI/
 
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Github allows everyone to work on this proejct together in parallel and remotely, so you are encouraged to download this project onto your computer and work on it while comitting often. After you have a sucessful update, you should create a pull request to merge it into the master branch. Any contributions you make are **greatly appreciated**.
 
-If you have a suggestion that would make this better, please implement it in a branch and create a pull request.
-
-Don't forget to give the project a star! Thanks again!
+Here's how to do it:
 
 1. Download the Project to your pc
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
 3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+5. Open a Pull Request (Go on the main page of the repo, click "Pull requests", and then "New pull request")
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 
@@ -201,8 +206,6 @@ Project Link: [https://github.com/CSI-Rockets-Eletronics/GroundStationUI](https:
 ## Acknowledgments
 
 - [Readme Template Source](https://github.com/othneildrew/Best-README-Template)
-- []()
-- []()
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

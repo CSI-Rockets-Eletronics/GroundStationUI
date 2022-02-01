@@ -5,40 +5,30 @@
 #include <stdio.h>
 #include <iostream>
 #include <ctime>
-#include <stdlib.h>
-#include "RelayStatuses.h"
-#include "Sensors.h"
-#include "FileReader.h"
-#include "DataParser.h"
+#include "VisualComponents/RelayStatuses.h"
+#include "VisualComponents/Sensors.h"
+#include "VisualComponents/ProgramStatusSymbol.h"
+#include "DataComponents/FileReader.h"
+#include "DataComponents/DataParser.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
-const int SNAKE_LENGTH = 1000;
-const int BLOCK_SIZE = 10;
-const int FRAMERATE = 60;
-const int SPEED = 40;
+const int FRAMERATE = 120;
 
 //Starts up SDL and creates window
 bool init();
 
-//Loads media
+//Loads media and assets
 bool loadMedia();
 
 //Frees media and shuts down SDL
 void close();
 
-//Resets the snake
-void resetSnake(int snake[][2]);
-
-void renderSnake(int snake[][2]);
-
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
-//The surface contained by the window
-SDL_Surface* gScreenSurface = NULL;
 
 //The image we will load and show on the screen
 SDL_Surface* gXOut = NULL;
@@ -67,7 +57,7 @@ bool init()
         }
 
         //Create window
-        gWindow = SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+        gWindow = SDL_CreateWindow( "CSI Ground Station", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
         if( gWindow == NULL )
         {
             printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
@@ -94,19 +84,13 @@ bool init()
     return success;
 }
 
+
 bool loadMedia()
 {
     //Loading success flag
     bool success = true;
 
-    //Load splash image
-    //gXOut = SDL_LoadBMP( "x.bmp" );
-    //if( gXOut == NULL )
-    //{
-        //printf( "Unable to load image %s! SDL Error: %s\n", "03_event_driven_programming/x.bmp", SDL_GetError() );
-        //success = false;
-    //}
-
+    //Load all the necessary media and assets here
     return success;
 }
 
@@ -124,56 +108,10 @@ void close()
     //Quit SDL subsystems
     SDL_Quit();
 }
-void resetSnake(double snake[][2]){
-    for (int i = 0; i < SNAKE_LENGTH; i ++){
-        snake[i][0] = NULL;
-        snake[i][1] = NULL;
-    }
-    snake[0][0] = SCREEN_WIDTH/2.0;
-    snake[0][1] = SCREEN_HEIGHT/2.0;
-}
 
-void renderSnake(double snake[][2]){
-    int thickness = 2;
-    //Render red filled quad
-    for (int i = 0; i < SNAKE_LENGTH; i++){
-        if (snake[i][0] != NULL){
-            SDL_Rect borderRect = { (int) snake[i][0], (int) snake[i][1], BLOCK_SIZE, BLOCK_SIZE};
-            SDL_SetRenderDrawColor( gRenderer, 0xFF, 0x00, 0x00, 0xFF );
-            SDL_RenderFillRect( gRenderer, &borderRect );
-            SDL_Rect fillRect = { (int) snake[i][0] + thickness, (int) snake[i][1] + thickness, BLOCK_SIZE-(2*thickness), BLOCK_SIZE-(2*thickness)};
-            SDL_SetRenderDrawColor( gRenderer, 0x00, 0xFF, 0x00, 0xFF );
-            SDL_RenderFillRect( gRenderer, &fillRect );
-        }
-
-    }
-
-
-}
-
-void genFood(int food[2]){
-    int x =  0 + rand() % (SCREEN_WIDTH - 0);
-    int y =  0 + rand() % (SCREEN_HEIGHT - 0);
-    food[0] = x; food[1] = y;
-}
-
-void renderFood(int food[2]){
-    SDL_Rect fillRect = { food[0], food[1] , BLOCK_SIZE, BLOCK_SIZE};
-    SDL_SetRenderDrawColor( gRenderer, 0x00,0x00 , 0xFF, 0xFF );
-    SDL_RenderFillRect( gRenderer, &fillRect );
-}
-
-void checkColision(int food[2], int snake[][2]){
-     
-}
 int main( int argc, char* args[] )
 {
-    //Start up SDL and create window
-    double snake[SNAKE_LENGTH][2];
-    resetSnake(snake);
-    int velocity[2] = {1,0};
-    int food [2] = {NULL,NULL};
-    genFood(food);
+
     //struct timeval stop, start;
     float startTime;
     float endTime;
@@ -197,85 +135,69 @@ int main( int argc, char* args[] )
         }
         else
         {
-            //Main loop flag
+            //Main loop quitting flag.
             bool quit = false;
-
-            //Event handler
             SDL_Event e;
 
-            //Define parts
+            //Keeps track of the time spent between frames (in milliseconds) so that we can interpolate later
+            int deltatime = 0;
+
+            //Initialization of the components of program
             RelayStatuses myRelays = RelayStatuses(0,0,gRenderer);
             Sensors mySensors = Sensors(0, 200,gRenderer);
-            int deltatime = 0;
             FileReader myFileReader = FileReader(inputFileName);
             DataParser myDataParser = DataParser(34);
-            //While application is running
+            ProgramStatusSymbol myProgramStatusSymbol = ProgramStatusSymbol(600,300,15.0,gRenderer);
+
+
             while( !quit )
             {
-                //mingw_gettimeofday(&start, NULL); //start time
+
                 startTime = (float) clock();
+
                 //Handle events on queue
+                //Like key presses and other inputs
                 while( SDL_PollEvent( &e ) ){
-                    //User requests quit
+                    //When the X button on the window is pressed to close the program or the OS asks it to be closed
                     if( e.type == SDL_QUIT )
                     {
                         quit = true;
                     }//User presses a key
                     else if( e.type == SDL_KEYDOWN ){
-
-
+                        //Handle that
                     }
                 }
 
                 //Clear screen
                 SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
                 SDL_RenderClear( gRenderer );
-                if (true){
-                    double deltaD [2] = { velocity[0] * (deltatime/1000.0) * SPEED,velocity[1]*(deltatime/1000.0) * SPEED};
-
-                    double difX = (snake[0][0] + deltaD[0]) - ((int) (snake[0][0] + deltaD[0]) % SCREEN_WIDTH);
-                    double difY = (snake[0][1] + deltaD[1]) - ((int) (snake[0][1] + deltaD[1]) % SCREEN_HEIGHT);
-                    if (abs(difX) > 1){
-                        snake[0][0] = (double) ((int) (snake[0][0] + deltaD[0]) % SCREEN_WIDTH);
-                    }
-                    if (abs(difY) > 1){
-                        snake[0][1] = (double) ((int) (snake[0][1] + deltaD[1]) % SCREEN_HEIGHT);
-                    }
-                    if (!(abs(difX) > 1) && !(abs(difY) > 1)){
-                        snake[0][0] = (snake[0][0] + deltaD[0]);
-                        snake[0][1] = (snake[0][1] + deltaD[1]);
-                    }
-                    //cout<<snake[0][0]<<" "<<snake[0][1]<<endl;
 
 
-                    //Render Snake
-
-                    renderSnake(snake);
-
-                    //Render Food
-                    renderFood(food);
-                }
-
-
-                //Render the relays
+                //Render the relays dashboard
                 myRelays.update(myDataParser.getRelayStatus());
                 myRelays.render();
 
-                //Render the sensors
+                //Render the sensors dashboard
                 mySensors.update(myDataParser.getSensorValues());
                 mySensors.render();
-                //x
+
                 //cout<<myFileReader.getLastLine()<<endl;
+                //Reads from the input file the latest line of data and decodes it
                 myDataParser.updateLine(myFileReader.getLastLine());
+
+                //Keeps rotating to show the status of the program
+                //If this stops rotating, the program has stopped
+                myProgramStatusSymbol.update(deltatime);
+                myProgramStatusSymbol.render();
+
                 //Update screen
                 SDL_RenderPresent( gRenderer );
 
                 //Management to cap the framerate and keep it constant at the specified framerate
-                SDL_Delay((int) MAX((1000/FRAMERATE)-deltatime,0) );
-                //mingw_gettimeofday(&stop, NULL);
+                SDL_Delay((int) MAX((1000.0/FRAMERATE)-deltatime,0) );
                 endTime = (float)  clock();
-                //deltatime = (int) stop.tv_usec - start.tv_usec;
                 deltatime = 1000*((endTime-startTime))/CLOCKS_PER_SEC; //Working with milliseconds here
+                //CLOKS_PER_SEC Can vary from system to system
                 //cout<<deltatime<<" " << CLOCKS_PER_SEC<<endl;
             }
         }

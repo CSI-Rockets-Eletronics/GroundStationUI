@@ -206,7 +206,7 @@ Project Link: [https://github.com/CSI-Rockets-Eletronics/GroundStationUI](https:
 ## Acknowledgments
 
 - [Readme Template Source](https://github.com/othneildrew/Best-README-Template)
-
+- [Tutorial on how to use SDL2](https://lazyfoo.net/tutorials/SDL/)
 <p align="right">(<a href="#top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->

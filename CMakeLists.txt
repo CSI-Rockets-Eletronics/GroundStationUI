@@ -9,5 +9,5 @@ set(SDL2_LIB_DIR SDL2/lib)
 include_directories(${SDL2_INCLUDE_DIR})
 link_directories(${SDL2_LIB_DIR})
 
-add_executable(GUI main.cpp Sensors.cpp RelayStatuses.cpp FileReader.cpp DataParser.cpp)
+add_executable(GUI main.cpp VisualComponents/Sensors.cpp VisualComponents/RelayStatuses.cpp VisualComponents/ProgramStatusSymbol.cpp  DataComponents/FileReader.cpp DataComponents/DataParser.cpp)
 target_link_libraries(${PROJECT_NAME} mingw32 SDL2_ttf SDL2main SDL2 )

@@ -68,13 +68,15 @@
 <div align="center">
 <figure>
     <img src="https://i.imgur.com/wNu3vcQ.png" alt="Current Stage Screenshot" width="600">
-    <p>
+    <br>
     <figcaption>Screenshot of the current state</figcaption>
+    <br>
 </figure>
 <figure>
     <img src="https://i.imgur.com/luzaoYA.png" alt="Design Mockup" width="600">
-    <p>
+    <br>
     <figcaption>Mockup of the desired final state</figcaption>
+    <br>
 </figure>
 </div>
 

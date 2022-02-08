@@ -15,7 +15,7 @@
 //Screen dimension constants
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
-const int FRAMERATE = 120;
+const int FRAMERATE = 30;
 
 //Starts up SDL and creates window
 bool init();
@@ -113,8 +113,8 @@ int main( int argc, char* args[] )
 {
 
     //struct timeval stop, start;
-    float startTime;
-    float endTime;
+    clock_t startTime;
+    clock_t endTime;
     //Deal with command line arguments:
     string inputFileName = "outputUITESTREAL.txt";
     if (argc > 1){
@@ -153,7 +153,7 @@ int main( int argc, char* args[] )
             while( !quit )
             {
 
-                startTime = (float) clock();
+                startTime = clock();
 
                 //Handle events on queue
                 //Like key presses and other inputs
@@ -194,9 +194,15 @@ int main( int argc, char* args[] )
                 SDL_RenderPresent( gRenderer );
 
                 //Management to cap the framerate and keep it constant at the specified framerate
+                //cout<<"Delayed: "<< (int) MAX((1000.0/FRAMERATE)-deltatime,0) <<endl;
+                //cout<< clock()<<endl;
                 SDL_Delay((int) MAX((1000.0/FRAMERATE)-deltatime,0) );
-                endTime = (float)  clock();
-                deltatime = 1000*((endTime-startTime))/CLOCKS_PER_SEC; //Working with milliseconds here
+                endTime = clock();
+                deltatime = (int) 1000.0*( (endTime-startTime)/ ((float) CLOCKS_PER_SEC)); //Working with milliseconds here
+                if (deltatime > 1000) {
+                    deltatime = 0;
+                    cout<<"Can't keep up: deltatime overload. If this is happening frequently please upgrade your processor"<<endl;
+                }
                 //CLOKS_PER_SEC Can vary from system to system
                 //cout<<deltatime<<" " << CLOCKS_PER_SEC<<endl;
             }

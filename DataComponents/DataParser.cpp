@@ -75,7 +75,7 @@ void DataParser::updateLine(string inFileLine){
                 j++;
                 if (j == 4) {
                     j = 0;
-                    //cout<<(int)extraStatus[extraStatusPacketIndex]<<endl;
+                    ///cout<<(int)extraStatus[extraStatusPacketIndex]<<endl;
                     extraStatusPacketIndex++;
                 }
             }

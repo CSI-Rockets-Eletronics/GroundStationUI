@@ -41,8 +41,7 @@ void RelayStatuses::render(){
             }
             SDL_RenderFillRect( this->renderer, &fillRect );
             // Opens a font style and sets a size
-            if( this->Sans == NULL )
-            {
+            if( this->Sans == NULL ){
                 printf( "Failed to load lazy font! SDL_ttf Error: %s\n", TTF_GetError() );
             }
             // This is the color in rgb format,

@@ -10,12 +10,16 @@
 #include "VisualComponents/ProgramStatusSymbol.h"
 #include "DataComponents/FileReader.h"
 #include "DataComponents/DataParser.h"
+#include "SDL_FontCache/SDL_fontcache.h"
 #define MAX(x, y) (((x) > (y)) ? (x) : (y))
+
+const bool DEBUG = false;
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
 const int FRAMERATE = 30;
+
 
 //Starts up SDL and creates window
 bool init();
@@ -36,6 +40,8 @@ SDL_Surface* gXOut = NULL;
 
 //The window renderer
 SDL_Renderer* gRenderer = NULL;
+
+SDL_Texture *mainTexture = NULL;
 
 bool init()
 {
@@ -76,7 +82,12 @@ bool init()
             {
                 //Initialize renderer color
                 SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
-
+                //create Main texture
+                mainTexture = SDL_CreateTexture(gRenderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, SCREEN_WIDTH, SCREEN_HEIGHT);
+                if (mainTexture == NULL){
+                    printf( "Main Texture could not be created! SDL Error: %s\n", SDL_GetError() );
+                    success = false;
+                }
             }
         }
     }
@@ -112,9 +123,7 @@ void close()
 int main( int argc, char* args[] )
 {
 
-    //struct timeval stop, start;
-    clock_t startTime;
-    clock_t endTime;
+
     //Deal with command line arguments:
     string inputFileName = "outputUITESTREAL.txt";
     if (argc > 1){
@@ -141,7 +150,12 @@ int main( int argc, char* args[] )
 
             //Keeps track of the time spent between frames (in milliseconds) so that we can interpolate later
             int deltatime = 0;
-
+            float deltatimeDebug = 0.0;
+            //struct timeval stop, start;
+            clock_t startTime;
+            clock_t endTime;
+            clock_t startTimeDebug;
+            clock_t endTimeDebug;
             //Initialization of the components of program
             RelayStatuses myRelays = RelayStatuses(0,0,gRenderer);
             Sensors mySensors = Sensors(0, 200,gRenderer);
@@ -168,30 +182,50 @@ int main( int argc, char* args[] )
                     }
                 }
 
+                SDL_SetRenderTarget(gRenderer, mainTexture);
                 //Clear screen
                 SDL_SetRenderDrawColor( gRenderer, 0xFF, 0xFF, 0xFF, 0xFF );
                 SDL_RenderClear( gRenderer );
 
 
                 //Render the relays dashboard
+
                 myRelays.update(myDataParser.getRelayStatus());
                 myRelays.render();
 
                 //Render the sensors dashboard
+
                 mySensors.update(myDataParser.getSensorValues());
                 mySensors.render();
 
+
                 //cout<<myFileReader.getLastLine()<<endl;
                 //Reads from the input file the latest line of data and decodes it
+
                 myDataParser.updateLine(myFileReader.getLastLine());
 
                 //Keeps rotating to show the status of the program
                 //If this stops rotating, the program has stopped
+
                 myProgramStatusSymbol.update(deltatime);
                 myProgramStatusSymbol.render();
 
+
+
                 //Update screen
+                if (DEBUG){
+                    startTimeDebug = clock();
+                }
+
+                SDL_SetRenderTarget(gRenderer, NULL);
+                SDL_RenderCopy(gRenderer, mainTexture, NULL, NULL);
                 SDL_RenderPresent( gRenderer );
+                if (DEBUG){
+                    endTimeDebug = clock();
+                    deltatimeDebug =  1000.0*(((float) (endTimeDebug-startTimeDebug))/ ((float) CLOCKS_PER_SEC)); //Working with milliseconds here
+                    cout<<"Time elapsed: "<<deltatimeDebug<<endl;
+                }
+
 
                 //Management to cap the framerate and keep it constant at the specified framerate
                 //cout<<"Delayed: "<< (int) MAX((1000.0/FRAMERATE)-deltatime,0) <<endl;
@@ -206,11 +240,12 @@ int main( int argc, char* args[] )
                 //CLOKS_PER_SEC Can vary from system to system
                 //cout<<deltatime<<" " << CLOCKS_PER_SEC<<endl;
             }
+            //Cleanup the components
+            myRelays.free();
         }
     }
 
     //Free resources and close SDL
     close();
-
     return 0;
 }
